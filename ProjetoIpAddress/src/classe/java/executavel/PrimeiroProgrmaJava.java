@@ -133,7 +133,7 @@ public class PrimeiroProgrmaJava {
 		System.out.println("Endereço Broadcast: "+enderecoIpSet.getBroadcast());
 		System.out.println("Mascara de Rede: "+ enderecoIpSet.getMascAdress().getMascAddress());
 		System.out.println("Numero de hosts utilizáveis: " + enderecoIpSet.getMascAdress().getUsebleHosts());
-		System.out.printf("\n##################################################\n");
+		System.out.printf("\n################################################\n");
 	}
 	}
 }
