@@ -36,7 +36,7 @@ public class MascAddress {
 		int i = 0;
 		boolean stopVerification = false;
 
-		if (this.mascAddress != null) {
+		if (!this.mascAddress.isEmpty()) {
 
 			int stringLen = this.mascAddress.length();
 			int a = 0, b = 0, c = 0;
@@ -74,7 +74,7 @@ public class MascAddress {
 					if ((octetAux[i] == 255) && (i == 0)) {
 						break;
 
-					} else if ((((octetAux[i] == e) && (octetAux[i] <= octetAux[i - 1])) || (octetAux[i] == 0))
+					} else if ((((octetAux[i] == e) && ((octetAux[i] < octetAux[i - 1])||(octetAux[i]==255))) || (octetAux[i] == 0))
 							&& (i > 0)) {
 						if (i >= 3) {
 							this.validMasc = true;

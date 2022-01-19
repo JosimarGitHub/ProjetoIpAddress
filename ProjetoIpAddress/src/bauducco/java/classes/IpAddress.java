@@ -61,7 +61,7 @@ public class IpAddress {
 		int[] octetAux = new int[4];
 		int i = 0;
 
-		if (this.ipAddress != null) {
+		if (!this.ipAddress.isEmpty()) {
 
 			int stringLen = this.ipAddress.length();
 			int a = 0, b = 0, c = 0;

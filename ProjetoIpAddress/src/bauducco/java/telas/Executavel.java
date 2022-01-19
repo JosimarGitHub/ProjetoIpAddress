@@ -1,13 +1,14 @@
 package bauducco.java.telas;
 
-import bauducco.java.telas.CalculoSubRedesIPV4;
+import java.io.IOException;
 
 public class Executavel {
 
-	public static void main(String[] args) {
+	@SuppressWarnings("unused")
+	public static void main(String[] args) throws IOException {
 		
-		CalculoSubRedesIPV4 TelaCalculoIPV4 = new CalculoSubRedesIPV4();
-
+		SetIPAddress telaSetIp = new SetIPAddress();
+		
 	}
 
 }
