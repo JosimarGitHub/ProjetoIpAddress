@@ -26,22 +26,6 @@ public class IpAddress {
 	}
 	
 	public MascAddress getMascAdress() {
-		MascAddress mascAddress = new MascAddress();
-		mascAddress = this.mascAdress;
-		if (mascAddress.getMascAddress() == null) {
-			if(this.validAddress == true) {
-				String ipType = this.getIpClass();
-				if(ipType =="A") {
-					mascAddress.setMascAddress("255.0.0.0");
-				}else if(ipType =="B") {
-					mascAddress.setMascAddress("255.255.0.0");
-				}else if(ipType =="C") {
-					mascAddress.setMascAddress("255.255.255.0");
-				}
-				
-			}
-			this.mascAdress = mascAddress;
-		}
 		return this.mascAdress;
 	}
 
@@ -54,69 +38,44 @@ public class IpAddress {
 		return validAddress;
 	}
 	
-
 	public int[] getOctet() {
 
 		int[] octet = new int[4];
-		int[] octetAux = new int[4];
-		int i = 0;
+		String[] octetAux;
 
 		if (!this.ipAddress.isEmpty()) {
 
-			int stringLen = this.ipAddress.length();
-			int a = 0, b = 0, c = 0;
+			octetAux = this.ipAddress.split("\\.");
 
-			for (i = 0; i <= 3; i++) {
+			if (octet.length == octetAux.length) {
 
-				for (a = c; a < stringLen; a++) {
+				for (int i = 0; i < octetAux.length; i++) {
 
-					if (((this.ipAddress.charAt(a)) == '.') && (i < 3)) {
-						octetAux[i] = Integer.parseInt(ipAddress.substring(b, a));
-						if (i < 2) {
-							b = a + 1;
-							c = a + 1;
-							break;
-						} else {
-							b = a + 1;
-							c = a;
-							break;
+					if ((octetAux[i].matches("[0-9]*"))&& (!octetAux[i].isEmpty())) {
+						octet[i] = Integer.parseInt(octetAux[i]);
+						if (i == 3) {
+							this.validAddress = true;
 						}
-
-					} else if (((this.ipAddress.charAt(a)) == '.') && (i == 3)) {
-						octetAux[i] = Integer.parseInt(ipAddress.substring(b, stringLen));
+					} else {
+						this.validAddress = false;
 						break;
 					}
 
+					/* Metodo verifica se IP é valido */
+					if ((octet[i] < 0) || (octet[i] > 255)) {
+						this.validAddress = false;
+						break;
+					}
 				}
-
-				/* Metodo verifica se IP é valido */
-				if ((octetAux[i] < 0) || (octetAux[i] > 255)) {
-					this.validAddress = false;
-					octet[0] = 0;
-					octet[1] = 0;
-					octet[2] = 0;
-					octet[3] = 0;
-					break;
-
-				} else if (i == 3) {
-					this.validAddress = true;
-				}
-
+			} else {
+				this.validAddress = false;
 			}
-
 		} else {
 			this.validAddress = false;
-			return null;
 		}
-		if (this.validAddress) {
-			octet = octetAux;
-			return octet;
-		} else {
-			return null;
-		}
-
+		return octet;
 	}
-
+	
 	public String getIpClass() {
 
 		int[] ipAddress = new int[4];

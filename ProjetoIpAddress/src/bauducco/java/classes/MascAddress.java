@@ -27,8 +27,58 @@ public class MascAddress {
 		this.getOctet();
 		return validMasc;
 	}
-
 	
+	public int[] getOctet() {
+
+		int[] octet = new int[4];
+		String[] octetAux;
+
+		if (!this.mascAddress.isEmpty()) {
+
+			octetAux = this.mascAddress.split("\\.");
+
+			if (octet.length == octetAux.length) {
+
+				for (int i = 0; i < octetAux.length; i++) {
+
+					if ((octetAux[i].matches("[0-9]*")) && (!octetAux[i].isEmpty())) {
+						
+						octet[i] = Integer.parseInt(octetAux[i]);
+						
+					} else {
+						this.validMasc = false;
+						break;
+					}
+
+					/* Metodo verifica se IP é valido */
+					int d, e = 0;
+
+					for (d = 0; d < 8; d++) {
+
+						e = 256 - ((int) (Math.pow(2, d)));
+
+						if ((octet[i] == 255) && (i == 0)) {
+							break;
+
+						} else if ((((octet[i] == e) && ((octet[i] < octet[i - 1]) || (octet[i] == 255)))
+								|| (octet[i] == 0)) && (i > 0)) {
+							if (i >= 3) {
+								this.validMasc = true;
+							}
+							break;
+						}
+					}
+				}
+			} else {
+				this.validMasc = false;
+			}
+		} else {
+			this.validMasc = false;
+		}
+		return octet;
+	}
+
+	/*
 	public int[] getOctet() {
 
 		int[] octet = new int[4];
@@ -64,7 +114,7 @@ public class MascAddress {
 
 				}
 
-				/* Metodo verifica se IP é valido */
+				/* Metodo verifica se IP é valido 
 				int d, e = 0;
 
 				for (d = 0; d < 8; d++) {
@@ -108,7 +158,7 @@ public class MascAddress {
 			return null;
 		}
 
-	}
+	}*/
 
 	public int getCIDRNotation() {
 

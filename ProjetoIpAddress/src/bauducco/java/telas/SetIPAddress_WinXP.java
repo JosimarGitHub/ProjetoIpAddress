@@ -33,16 +33,20 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import bauducco.java.classes.IpAddress;
 
-public class SetIPAddress extends JFrame {
+
+public class SetIPAddress_WinXP extends JFrame {
 	
-	private static final long serialVersionUID = -2504562347407582961L;
 	
 	
 	//#########################################################
 	//***************** Criação de Objetos *******************
 	//#########################################################
 	
-	//Objeto IPAdress para controle de endereços IP
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+		//Objeto IPAdress para controle de endereços IP
 		private IpAddress enderecoIp = new IpAddress();
 		private IpAddress enderecoGateway = new IpAddress();
 		private IpAddress enderecoDNS1 = new IpAddress();
@@ -225,7 +229,7 @@ public class SetIPAddress extends JFrame {
 		
 		/************************Metodo Construtor da Tela***********************/
 	
-		public SetIPAddress()throws IOException, URISyntaxException {
+		public SetIPAddress_WinXP()throws IOException, URISyntaxException {
 			
 			//Criando pasta paraArquivos
 			criarDiretorios();
@@ -656,4 +660,5 @@ public class SetIPAddress extends JFrame {
 			
 		}
 		
+
 }
