@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,14 +28,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import bauducco.java.classes.IpAddress;
 
 public class SetIPAddress extends JFrame {
 	
 	private static final long serialVersionUID = -2504562347407582961L;
-	
 	
 	//#########################################################
 	//***************** Criação de Objetos *******************
@@ -69,66 +69,58 @@ public class SetIPAddress extends JFrame {
 		private JComboBox<String> box = new JComboBox<String>();
 		private JCheckBox dhcpFalse = new JCheckBox("Desabilita");
 		private JCheckBox dhcpTrue = new JCheckBox("Habilita");
-		private JLabel fig1 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_1.png")));
-		private JLabel fig2 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_2.png")));
-		private JLabel fig3 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_3.png")));
-		private JLabel fig4 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_4.png")));
+		
 		
 		//Metodo para animar a tela quando esta em processamento
 		private Runnable animacao = new Runnable() {
 
 			@Override
 			public void run() {
+				
+				// Gerenciador de Layout
+				GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+				// Posicionamento e configuraçoes
+				gridBagConstraints.weightx = 550;
+				gridBagConstraints.weighty = 550;
+				gridBagConstraints.gridx = 0;
+				gridBagConstraints.gridy = 7;
+				gridBagConstraints.gridwidth = 3;
+				gridBagConstraints.insets = new Insets(5, 10, 10, 5);
+				gridBagConstraints.anchor = GridBagConstraints.CENTER;
+
+				// A cor da String quando a barra de valor estiver sobre ela
+				UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
+				// A cor da String quando a barra de valor NÃO estiver sobre ela
+				UIManager.put("ProgressBar.selectionBackground", Color.BLACK);
+				
+				JProgressBar barra = new JProgressBar();
+				barra.setBorderPainted(true);
+				barra.setBackground(Color.GRAY);
+				barra.setForeground(Color.GREEN);
+				barra.setMaximum(1000);
+				barra.setStringPainted(true);
+				barra.setPreferredSize(new Dimension(300, 30));
+				painel.add(barra, gridBagConstraints);
+				barra.setVisible(true);
+				
 				resultado.setFont(new Font("Arial",Font.BOLD,24));
-				int i = 0;
+				resultado.setText("\n\n                        Processando");
+
 				
 				while (true) {
-
-						if(i==0) {
-							
-							fig1.setVisible(true);
-							fig2.setVisible(false);
-							fig3.setVisible(false);
-							fig4.setVisible(false);
-							resultado.setText("\n\n                          Processando");
-							
-						}else if(i==1) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(true);
-							fig3.setVisible(false);
-							fig4.setVisible(false);
-							resultado.setText(resultado.getText()+".");
-							
-						}else if(i==2) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(false);
-							fig3.setVisible(true);
-							fig4.setVisible(false);
-							resultado.setText(resultado.getText()+".");
-							
-						}else if(i==3) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(false);
-							fig3.setVisible(false);
-							fig4.setVisible(true);
-							resultado.setText(resultado.getText()+".");
-							
-						}
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
+					
+					barra.setVisible(true);
+					barra.setEnabled(true);
+					
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (i == 3) {
-						i = 0;
-					} else {
-						i++;
-					}
-
+					
+					barra.setValue(barra.getValue() + 10);
 				}
 
 			}
@@ -188,10 +180,7 @@ public class SetIPAddress extends JFrame {
 										resultado.setText(resultado.getText() + string + "\n");
 									}
 									eventoAnimacao.stop();
-									fig1.setVisible(false);
-									fig2.setVisible(false);
-									fig3.setVisible(false);
-									fig4.setVisible(false);
+									
 								} else {
 									JOptionPane.showMessageDialog(null,
 											"DNS Secundario inválido\nCaso nao utilizado deixar em branco");
@@ -227,6 +216,7 @@ public class SetIPAddress extends JFrame {
 	
 		public SetIPAddress()throws IOException, URISyntaxException {
 			
+			
 			//Criando pasta paraArquivos
 			criarDiretorios();
 			
@@ -237,10 +227,8 @@ public class SetIPAddress extends JFrame {
 			
 			//Iniciando o DHCP desabilitado
 			dhcpFalse.setSelected(true);
-			fig1.setVisible(false);
-			fig2.setVisible(false);
-			fig3.setVisible(false);
-			fig4.setVisible(false);
+			//barra.setVisible(false);
+			
 			
 			/*********Distribuicao,dimensionamento e funçoes dos Componentes***************/
 			
@@ -259,7 +247,7 @@ public class SetIPAddress extends JFrame {
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.gridy = 0;
 			gridBagConstraints.gridwidth =3;
-			gridBagConstraints.insets = new Insets(5, 35, 5, 5);
+			gridBagConstraints.insets = new Insets(5, 30, 5, 5);
 			gridBagConstraints.anchor = GridBagConstraints.CENTER;
 			
 			//Combo Box
@@ -387,20 +375,9 @@ public class SetIPAddress extends JFrame {
 			});
 			
 			 gridBagConstraints.gridy=7;
-			
-			 //Icone relogio processando
-			 painel.add(fig1,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig2,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig3,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig4,gridBagConstraints);
 			 
 			//Imprime a configuraçao da Interface selecionada apos o set
+			gridBagConstraints.insets = new Insets(5, 17, 10, 5);
 			resultado.setPreferredSize(new Dimension(500, 230));
 			resultado.setSelectedTextColor(Color.RED);
 			resultado.setFont(new Font("Arial",Font.BOLD,14));
@@ -566,7 +543,7 @@ public class SetIPAddress extends JFrame {
 			
 			if(dhcpTrue) {
 				
-				criaSetIPV4.write("netsh interface ipv4 set address \"" + interfaceRede + "\" dhcp");
+				criaSetIPV4.write("chcp 1252\nnetsh interface ipv4 set address \"" + interfaceRede + "\" dhcp");
 				criaSetIPV4.write("\n netsh interface ipv4 set dns \"" + interfaceRede + "\" dhcp");
 				criaSetIPV4.write("\ntimeout 1");
 				criaSetIPV4.write("\nexit");
@@ -576,7 +553,7 @@ public class SetIPAddress extends JFrame {
 				
 			}else {
 
-			criaSetIPV4.write("netsh interface ipv4 set address \"" + interfaceRede + "\" static "
+			criaSetIPV4.write("chcp 1252\nnetsh interface ipv4 set address \"" + interfaceRede + "\" static "
 					+ enderecoIp.getIpAddress() + " " + enderecoIp.getMascAdress().getMascAddress() + " "
 					+ enderecoGateway.getIpAddress());
 			 if(!enderecoDNS1.getIpAddress().isEmpty()) {

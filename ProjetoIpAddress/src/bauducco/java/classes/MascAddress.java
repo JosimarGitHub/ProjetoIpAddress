@@ -32,6 +32,7 @@ public class MascAddress {
 
 		int[] octet = new int[4];
 		String[] octetAux;
+		boolean stopVerification = false;
 
 		if (!this.mascAddress.isEmpty()) {
 
@@ -57,16 +58,31 @@ public class MascAddress {
 
 						e = 256 - ((int) (Math.pow(2, d)));
 
-						if ((octet[i] == 255) && (i == 0)) {
+						if (octet[i] == 255 && i==0) {
 							break;
-
-						} else if ((((octet[i] == e) && ((octet[i] < octet[i - 1]) || (octet[i] == 255)))
-								|| (octet[i] == 0)) && (i > 0)) {
-							if (i >= 3) {
-								this.validMasc = true;
-							}
-							break;
+							
+						}else if(octet[i] != 255 && i==0) {
+							stopVerification = true;
+							
 						}
+						if (i > 0) {
+							if ((((octet[i] == e)
+									&& ((octet[i] < octet[i - 1]) || (octet[i] == 255 && octet[i - 1] == 255)
+											|| (octet[i] == 0 && octet[i - 1] == 0)))
+									|| (octet[i] == 0)) && (i > 0)) {
+								if (i >= 3) {
+									this.validMasc = true;
+								}
+								break;
+							} else if (d == 7) {
+								this.validMasc = false;
+								stopVerification = true;
+								break;
+							}
+						}
+					}
+					if (stopVerification) {
+						break;
 					}
 				}
 			} else {
@@ -77,89 +93,7 @@ public class MascAddress {
 		}
 		return octet;
 	}
-
-	/*
-	public int[] getOctet() {
-
-		int[] octet = new int[4];
-		int[] octetAux = new int[4];
-		int i = 0;
-		boolean stopVerification = false;
-
-		if (!this.mascAddress.isEmpty()) {
-
-			int stringLen = this.mascAddress.length();
-			int a = 0, b = 0, c = 0;
-
-			for (i = 0; i <= 3; i++) {
-
-				for (a = c; a < stringLen; a++) {
-
-					if (((this.mascAddress.charAt(a)) == '.') && (i < 3)) {
-						octetAux[i] = Integer.parseInt(mascAddress.substring(b, a));
-						if (i < 2) {
-							b = a + 1;
-							c = a + 1;
-							break;
-						} else {
-							b = a + 1;
-							c = a;
-							break;
-						}
-
-					} else if (((this.mascAddress.charAt(a)) == '.') && (i == 3)) {
-						octetAux[i] = Integer.parseInt(mascAddress.substring(b, stringLen));
-						break;
-					}
-
-				}
-
-				/* Metodo verifica se IP é valido 
-				int d, e = 0;
-
-				for (d = 0; d < 8; d++) {
-
-					e = 256 - ((int) (Math.pow(2, d)));
-
-					if ((octetAux[i] == 255) && (i == 0)) {
-						break;
-
-					} else if ((((octetAux[i] == e) && ((octetAux[i] < octetAux[i - 1])||(octetAux[i]==255))) || (octetAux[i] == 0))
-							&& (i > 0)) {
-						if (i >= 3) {
-							this.validMasc = true;
-						}
-						break;
-
-					} else if (d == 7) {
-						this.validMasc = false;
-						stopVerification = true;
-						octet[0] = 0;
-						octet[1] = 0;
-						octet[2] = 0;
-						octet[3] = 0;
-						break;
-
-					}
-				}
-				if (stopVerification) {
-					break;
-				}
-			}
-
-		} else {
-			this.validMasc = false;
-			return null;
-		}
-		if (this.validMasc) {
-			octet = octetAux;
-			return octet;
-		} else {
-			return null;
-		}
-
-	}*/
-
+	
 	public int getCIDRNotation() {
 
 		int CIDRNotation = 0;

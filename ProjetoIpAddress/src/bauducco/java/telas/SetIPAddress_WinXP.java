@@ -21,7 +21,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -29,8 +28,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+
 import bauducco.java.classes.IpAddress;
 
 
@@ -73,66 +75,56 @@ public class SetIPAddress_WinXP extends JFrame {
 		private JComboBox<String> box = new JComboBox<String>();
 		private JCheckBox dhcpFalse = new JCheckBox("Desabilita");
 		private JCheckBox dhcpTrue = new JCheckBox("Habilita");
-		private JLabel fig1 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_1.png")));
-		private JLabel fig2 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_2.png")));
-		private JLabel fig3 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_3.png")));
-		private JLabel fig4 = new JLabel(new ImageIcon(this.getClass().getResource("/Relogio_4.png")));
 		
 		//Metodo para animar a tela quando esta em processamento
 		private Runnable animacao = new Runnable() {
 
 			@Override
 			public void run() {
+				// Gerenciador de Layout
+				GridBagConstraints gridBagConstraints = new GridBagConstraints();
+
+				// Posicionamento e configuraçoes
+				gridBagConstraints.weightx = 550;
+				gridBagConstraints.weighty = 550;
+				gridBagConstraints.gridx = 0;
+				gridBagConstraints.gridy = 7;
+				gridBagConstraints.gridwidth = 3;
+				gridBagConstraints.insets = new Insets(5, 10, 10, 5);
+				gridBagConstraints.anchor = GridBagConstraints.CENTER;
+
+				// A cor da String quando a barra de valor estiver sobre ela
+				UIManager.put("ProgressBar.selectionForeground", Color.BLACK);
+				// A cor da String quando a barra de valor NÃO estiver sobre ela
+				UIManager.put("ProgressBar.selectionBackground", Color.BLACK);
+				
+				JProgressBar barra = new JProgressBar();
+				barra.setBorderPainted(true);
+				barra.setBackground(Color.GRAY);
+				barra.setForeground(Color.GREEN);
+				barra.setMaximum(1000);
+				barra.setStringPainted(true);
+				barra.setPreferredSize(new Dimension(300, 30));
+				painel.add(barra, gridBagConstraints);
+				barra.setVisible(true);
+				
 				resultado.setFont(new Font("Arial",Font.BOLD,24));
-				int i = 0;
+				resultado.setText("\n\n                        Processando");
+
 				
 				while (true) {
-
-						if(i==0) {
-							
-							fig1.setVisible(true);
-							fig2.setVisible(false);
-							fig3.setVisible(false);
-							fig4.setVisible(false);
-							resultado.setText("\n\n                          Processando");
-							
-						}else if(i==1) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(true);
-							fig3.setVisible(false);
-							fig4.setVisible(false);
-							resultado.setText(resultado.getText()+".");
-							
-						}else if(i==2) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(false);
-							fig3.setVisible(true);
-							fig4.setVisible(false);
-							resultado.setText(resultado.getText()+".");
-							
-						}else if(i==3) {
-							
-							fig1.setVisible(false);
-							fig2.setVisible(false);
-							fig3.setVisible(false);
-							fig4.setVisible(true);
-							resultado.setText(resultado.getText()+".");
-							
-						}
-						try {
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
+					
+					barra.setVisible(true);
+					barra.setEnabled(true);
+					
+					try {
+						Thread.sleep(150);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (i == 3) {
-						i = 0;
-					} else {
-						i++;
-					}
-
+					
+					barra.setValue(barra.getValue() + 10);
 				}
 
 			}
@@ -192,10 +184,7 @@ public class SetIPAddress_WinXP extends JFrame {
 										resultado.setText(resultado.getText() + string + "\n");
 									}
 									eventoAnimacao.stop();
-									fig1.setVisible(false);
-									fig2.setVisible(false);
-									fig3.setVisible(false);
-									fig4.setVisible(false);
+
 								} else {
 									JOptionPane.showMessageDialog(null,
 											"DNS Secundario inválido\nCaso nao utilizado deixar em branco");
@@ -241,10 +230,6 @@ public class SetIPAddress_WinXP extends JFrame {
 			
 			//Iniciando o DHCP desabilitado
 			dhcpFalse.setSelected(true);
-			fig1.setVisible(false);
-			fig2.setVisible(false);
-			fig3.setVisible(false);
-			fig4.setVisible(false);
 			
 			/*********Distribuicao,dimensionamento e funçoes dos Componentes***************/
 			
@@ -391,18 +376,6 @@ public class SetIPAddress_WinXP extends JFrame {
 			});
 			
 			 gridBagConstraints.gridy=7;
-			
-			 //Icone relogio processando
-			 painel.add(fig1,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig2,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig3,gridBagConstraints);
-			 
-			//Icone relogio processando
-			 painel.add(fig4,gridBagConstraints);
 			 
 			//Imprime a configuraçao da Interface selecionada apos o set
 			resultado.setPreferredSize(new Dimension(500, 230));
@@ -482,8 +455,9 @@ public class SetIPAddress_WinXP extends JFrame {
 		@SuppressWarnings("unused")
 		public void criarDiretorios() throws IOException, URISyntaxException {
 			
-			File criarPasta = new File(System.getProperty("user.home"));
-			criarPasta = new File(criarPasta,"SetIPV4");
+			String pathAux = System.getProperty("user.home");
+			String path = pathAux.substring(0,2);
+			File criarPasta = new File(path+"\\SetIPV4");
 			boolean criarPastaOk = false;
 			criarPastaOk= criarPasta.mkdir();
 			
@@ -491,7 +465,7 @@ public class SetIPAddress_WinXP extends JFrame {
 				
 				InputStream arquivo = (this.getClass().getClassLoader().getResourceAsStream("Administrador.txt"));
 				
-				File startCmd = new File(System.getProperty("user.home")+"\\SetIPV4\\start.cmd");
+				File startCmd = new File(path+"\\SetIPV4\\start.cmd");
 				
 				FileWriter criastartCmd = new FileWriter(startCmd);
 		
@@ -501,7 +475,7 @@ public class SetIPAddress_WinXP extends JFrame {
 
 				while (lerStart.hasNext()) {
 					
-					Aux = lerStart.nextLine()+"\n";
+					Aux = lerStart.nextLine()+System.lineSeparator();
 					criastartCmd.write(Aux);
 					
 				}
@@ -517,7 +491,9 @@ public class SetIPAddress_WinXP extends JFrame {
 		//Metodo criar arquivo.cmd para criar um txt com as interfaces de rede disponiveis 
 		public static List<String> criarShowInterfaces(List<String> string) throws IOException {
 			
-			File showIntefaces = new File(System.getProperty("user.home")+"\\SetIPV4\\showInterfaces.cmd");
+			String pathAux = System.getProperty("user.home");
+			String path = pathAux.substring(0,2);
+			File showIntefaces = new File(path+"\\SetIPV4\\showInterfaces.cmd");
 			FileWriter criaShowInterfaces = new FileWriter(showIntefaces);
 
 			if (!showIntefaces.exists()) {
@@ -525,7 +501,7 @@ public class SetIPAddress_WinXP extends JFrame {
 				showIntefaces.createNewFile();
 			}
 
-			criaShowInterfaces.write("chcp 1252\n netsh interface ipv4 show config >"+System.getProperty("user.home")+"\\SetIPV4\\interfaces.txt");
+			criaShowInterfaces.write("chcp 1252"+System.lineSeparator()+"netsh interface ip show config >"+path+"\\SetIPV4\\interfaces.txt");
 			criaShowInterfaces.flush();
 			criaShowInterfaces.close();
 			Desktop.getDesktop().open(showIntefaces);
@@ -537,7 +513,7 @@ public class SetIPAddress_WinXP extends JFrame {
 				e1.printStackTrace();
 			}
 			
-			FileInputStream showInterfacesOut = new FileInputStream(System.getProperty("user.home")+"\\SetIPV4\\interfaces.txt");
+			FileInputStream showInterfacesOut = new FileInputStream(path+"\\SetIPV4\\interfaces.txt");
 
 			Scanner lerInterfaces = new Scanner(showInterfacesOut);
 
@@ -563,39 +539,51 @@ public class SetIPAddress_WinXP extends JFrame {
 		//Motodo cria e executa arquivo.cmd para setar o IP na placa de rede 
 		public static void setIPV4(IpAddress enderecoIp,IpAddress enderecoGateway,
 				IpAddress enderecoDNS1,IpAddress enderecoDNS2,String interfaceRede,boolean dhcpTrue) throws IOException {
-
-			File setIPV4 = new File(System.getProperty("user.home")+"\\SetIPV4\\SetIPV4.cmd");
-			File startCmd = new File(System.getProperty("user.home")+"\\SetIPV4\\start.cmd");
+			
+			String pathAux = System.getProperty("user.home");
+			String path = pathAux.substring(0,2);
+			File setIPV4 = new File(path+"\\SetIPV4\\SetIPV4.cmd");
+			File startCmd = new File(path+"\\SetIPV4\\start.cmd");
 			FileWriter criaSetIPV4 = new FileWriter(setIPV4);
+			String auxGateway;
+			
+			if(!enderecoGateway.getIpAddress().isEmpty()) {
+				auxGateway = " 1";
+			}else {
+				auxGateway = " none";
+			}
 			
 			if(dhcpTrue) {
 				
-				criaSetIPV4.write("netsh interface ipv4 set address \"" + interfaceRede + "\" dhcp");
-				criaSetIPV4.write("\n netsh interface ipv4 set dns \"" + interfaceRede + "\" dhcp");
-				criaSetIPV4.write("\ntimeout 1");
-				criaSetIPV4.write("\nexit");
+				criaSetIPV4.write("chcp 1252");
+				criaSetIPV4.write(System.lineSeparator()+"netsh interface ip set address \"" + interfaceRede + "\" dhcp");
+				criaSetIPV4.write(System.lineSeparator()+"netsh interface ip set dns \"" + interfaceRede + "\" dhcp");
+				criaSetIPV4.write(System.lineSeparator()+"ping -n 5 127.0.0.1 >NUL");
+				criaSetIPV4.write(System.lineSeparator()+"exit");
 				criaSetIPV4.flush();
 				criaSetIPV4.close();
 				Desktop.getDesktop().open(startCmd);
 				
 			}else {
-
-			criaSetIPV4.write("netsh interface ipv4 set address \"" + interfaceRede + "\" static "
+				
+				criaSetIPV4.write("chcp 1252");
+				criaSetIPV4.write(System.lineSeparator()+"netsh interface ip set address \"" + interfaceRede + "\" static "
 					+ enderecoIp.getIpAddress() + " " + enderecoIp.getMascAdress().getMascAddress() + " "
-					+ enderecoGateway.getIpAddress());
+					+ enderecoGateway.getIpAddress()+auxGateway);
+				
 			 if(!enderecoDNS1.getIpAddress().isEmpty()) {
-			criaSetIPV4.write("\n netsh interface ipv4 set dns \"" + interfaceRede + "\" static "+enderecoDNS1.getIpAddress());
+				 criaSetIPV4.write(System.lineSeparator()+"netsh interface ip set dns \"" + interfaceRede + "\" static "+enderecoDNS1.getIpAddress());
 			 }else {
-				 criaSetIPV4.write("\n netsh interface ipv4 set dns \"" + interfaceRede + "\" static none");
+				 criaSetIPV4.write(System.lineSeparator()+"netsh interface ip set dns \"" + interfaceRede + "\" static none");
 			 }
 			 if(!enderecoDNS2.getIpAddress().isEmpty()) {
-				 criaSetIPV4.write("\n netsh interface ipv4 add dnsservers \"" + interfaceRede + "\" "+enderecoDNS2.getIpAddress()+" index=2");
-				 criaSetIPV4.write("\ntimeout 1");
-				 criaSetIPV4.write("\nexit");
+				 criaSetIPV4.write(System.lineSeparator()+"netsh interface ip add dns \"" + interfaceRede + "\" "+enderecoDNS2.getIpAddress()+" index=2");
+				 criaSetIPV4.write(System.lineSeparator()+"ping -n 5 127.0.0.1 >NUL");
+				 criaSetIPV4.write(System.lineSeparator()+"exit");
 			 }else {
-				 criaSetIPV4.write("\n netsh interface ipv4 add dnsservers \"" + interfaceRede + "\" none index=2");
-				 criaSetIPV4.write("\ntimeout 1");
-				 criaSetIPV4.write("\nexit");
+				 criaSetIPV4.write(System.lineSeparator()+"netsh interface ip add dns \"" + interfaceRede + "\" none index=2");
+				 criaSetIPV4.write(System.lineSeparator()+"ping -n 5 127.0.0.1 >NUL");
+				 criaSetIPV4.write(System.lineSeparator()+"exit");
 			 }
 			criaSetIPV4.flush();
 			criaSetIPV4.close();
@@ -606,8 +594,9 @@ public class SetIPAddress_WinXP extends JFrame {
 		//Metodo cria e executa arquivo.cmd para criacao de um txt com a configuraçao da placa de rede onde foi feito o set de endereço
 		public static List<String> showInterface(String nomeInterface,List<String> listString) throws IOException {
 			
-			
-			File showInteface = new File(System.getProperty("user.home") + "\\SetIPV4\\showInterface.cmd");
+			String pathAux = System.getProperty("user.home");
+			String path = pathAux.substring(0,2);
+			File showInteface = new File(path + "\\SetIPV4\\showInterface.cmd");
 			FileWriter criaShowInterface = new FileWriter(showInteface);
 
 			if (!showInteface.exists()) {
@@ -615,8 +604,8 @@ public class SetIPAddress_WinXP extends JFrame {
 				showInteface.createNewFile();
 			}
 
-			criaShowInterface.write("chcp 1252\n netsh interface ipv4 show config \""+nomeInterface+"\" >"
-					+ System.getProperty("user.home") + "\\SetIPV4\\interface.txt");
+			criaShowInterface.write("chcp 1252"+System.lineSeparator()+"netsh interface ip show config \""+nomeInterface+"\" >"
+					+ path + "\\SetIPV4\\interface.txt");
 			criaShowInterface.flush();
 			criaShowInterface.close();
 			Desktop.getDesktop().open(showInteface);
@@ -628,10 +617,10 @@ public class SetIPAddress_WinXP extends JFrame {
 				e1.printStackTrace();
 			}
 			
-			File showIntefaceTxt = new File(System.getProperty("user.home") + "\\SetIPV4\\interface.txt");
+			File showIntefaceTxt = new File(path + "\\SetIPV4\\interface.txt");
 			
 			FileInputStream showInterfaceOut = new FileInputStream(
-					System.getProperty("user.home") + "\\SetIPV4\\interface.txt");
+					path + "\\SetIPV4\\interface.txt");
 
 			Scanner lerInterface = new Scanner(showInterfaceOut);
 
@@ -648,7 +637,9 @@ public class SetIPAddress_WinXP extends JFrame {
 		//Metodo para apagar arquivos e pasta criados quando o aplicativo for fechado
 		public static void deletarPasta() {
 			
-			File deletarPasta = new File(System.getProperty("user.home")+"\\SetIPV4");
+			String pathAux = System.getProperty("user.home");
+			String path = pathAux.substring(0,2);
+			File deletarPasta = new File(path+"\\SetIPV4");
 			File[] arquivos = deletarPasta.listFiles();
 			
 			for (File file : arquivos) {
